@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Character Binder</title>
+
+    <!-- linking bootstrap CSS for prettier defaults -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-4Q6Gf2aSP4eDXB8Miphtr37CMZZQ5oXLH2yaXMJ2w8e2ZtHTl7GptT4jmndRuHDT" crossorigin="anonymous">
+
+    <!-- linking local CSS and JS files -->
+    <link rel="stylesheet" href="styles.css">
+    <script src="javascript.js"></script>
+
+    <!-- linking a typewriter-style font from google font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap" rel="stylesheet">
+</head>
+
+<!-- runs functions after the page loads all of the content -->
+
+<body onload="loadFromLocalStorage()">
+
+    <h1> Investigator Sheet</h1>
+
+    <div class="characterData">
+        <table id="characterDataTable">
+            <tr>
+                <th>CHARACTER NAME</th>
+                <th>PLAYER NAME</th>
+                <th>OCCUPATION</th>
+                <th>FILE</th>
+            </tr>
+            <tr>
+                <!-- onchange runs functions when the element loses focus -->
+                <td rowspan="2"><input type="text" id="charName" onchange="saveToLocalStorage(this.id)"></td>
+                <td rowspan="2"><input type="text" id="playerName" onchange="saveToLocalStorage(this.id)""></td>
+                <td rowspan=" 2"><input type="text" id="charOccupation" onchange="saveToLocalStorage(this.id)""></td>
+                <td><button type=" button" onclick="convertToJson()">SAVE</button></td>
+            </tr>
+            <tr>
+                <td><button type="button" onclick="loadFromJson()">LOAD</button></td>
+            </tr>
+        </table>
+    </div>
+
+    <hr>
+    <h1>Characteristics</h1>
+
+    <div class="characteristicsCollection">
+        <div class="characteristics1">
+            <table id="characteristicsTable">
+                <tr>
+                    <th>STAT</th>
+                    <th>FULL</th>
+                    <th>HALF</th>
+                    <th>FIFTH</th>
+                </tr>
+                <tr>
+                    <th>STR</th>
+                    <td><input type="number" id="str" min="0" max="99"
+                            onchange="updateScores(this.id); calcDamageBonusAndBuild(); calcMove(); saveToLocalStorage(this.id)">
+                    </td>
+                    <td><input type="text" id="strHalf" min="0" max="99" disabled></td>
+                    <td><input type="text" id="strFifth" min="0" max="99" disabled></td>
+                </tr>
+                <tr>
+                    <th>CON</th>
+                    <td><input type="number" id="con" min="0" max="99"
+                            onchange="updateScores(this.id); calcHP(); saveToLocalStorage(this.id)"></td>
+                    <td><input type="text" id="conHalf" min="0" max="99" disabled></td>
+                    <td><input type="text" id="conFifth" min="0" max="99" disabled></td>
+                </tr>
+                <tr>
+                    <th>SIZ</th>
+                    <td><input type="number" id="siz" min="0" max="99"
+                            onchange="updateScores(this.id); calcHP(); calcDamageBonusAndBuild(); calcMove(); saveToLocalStorage(this.id)">
+                    </td>
+                    <td><input type="text" id="sizHalf" min="0" max="99" disabled></td>
+                    <td><input type="text" id="sizFifth" min="0" max="99" disabled></td>
+                </tr>
+                <tr>
+                    <th>DEX</th>
+                    <td><input type="number" id="dex" min="0" max="99"
+                            onchange="updateScores(this.id); calcDodge(); calcMove(); saveToLocalStorage(this.id)">
+                    </td>
+                    <td><input type="text" id="dexHalf" min="0" max="99" disabled></td>
+                    <td><input type="text" id="dexFifth" min="0" max="99" disabled></td>
+                </tr>
+                <tr>
+                    <th>APP</th>
+                    <td><input type="number" id="app" min="0" max="99"
+                            onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                    <td><input type="text" id="appHalf" min="0" max="99" disabled></td>
+                    <td><input type="text" id="appFifth" min="0" max="99" disabled></td>
+                </tr>
+                <tr>
+                    <th>EDU</th>
+                    <td><input type="number" id="edu" min="0" max="99"
+                            onchange="updateScores(this.id); saveToLocalStorage(this.id); setLanguageMinimum()"></td>
+                    <td><input type="text" id="eduHalf" min="0" max="99" disabled></td>
+                    <td><input type="text" id="eduFifth" min="0" max="99" disabled></td>
+                </tr>
+                <tr>
+                    <th>INT</th>
+                    <td><input type="number" id="int" min="0" max="99"
+                            onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                    <td><input type="text" id="intHalf" min="0" max="99" disabled></td>
+                    <td><input type="text" id="intFifth" min="0" max="99" disabled></td>
+                </tr>
+                <tr>
+                    <th>POW</th>
+                    <td><input type="number" id="pow" min="0" max="99"
+                            onchange="updateScores(this.id); saveToLocalStorage(this.id); calcMagic()"></td>
+                    <td><input type="text" id="powHalf" min="0" max="99" disabled></td>
+                    <td><input type="text" id="powFifth" min="0" max="99" disabled></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="characteristics2">
+            <table id="statistics">
+                <tr>
+                    <th>STAT</th>
+                    <th>MAX</th>
+                    <th>CURR</th>
+                </tr>
+                <tr>
+                    <th>HP
+                        </td>
+                    <td><input type="text" id="hpMax" min="0" max="100" disabled></td>
+                    <td><input type="number" id="hpCurrent" min="0" onchange="saveToLocalStorage(this.id)"></td>
+                </tr>
+                <tr>
+                    <th>SAN</td>
+                    <td><input type="text" id=sanMax min="0" max="99" disabled></td>
+                    <td><input type="number" id=sanCurrent min="0" max="99" onchange="saveToLocalStorage(this.id)"></td>
+                </tr>
+                <tr>
+                    <th>MAG</td>
+                    <td><input type="text" id="magMax" min="0" max="24" disabled></td>
+                    <td><input type="number" id="magCurrent" min="0" onchange="saveToLocalStorage(this.id)"></td>
+                </tr>
+                <tr>
+                    <th>MOV</td>
+                    <td><input type="text" id="moveMax" min="0" max="9" disabled></td>
+                    <td><input type="number" id="moveCurrent" min="0" max="20" onchange="saveToLocalStorage(this.id)">
+                    </td>
+                </tr>
+                <tr>
+                    <th>LCK</td>
+                    <td><input type="number" id="luckCurrent" min="0" max="99" onchange="saveToLocalStorage(this.id)">
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="characteristics3">
+            <table>
+                <tr>
+                    <th>COMBAT</th>
+                    <th>FULL</th>
+                    <th>HALF</th>
+                    <th>FIFTH</th>
+                </tr>
+                <tr>
+                    <th>DODGE</th>
+                    <td><input type="number" id="dodge" min="0" max="100" oninput="discreteDodge()"
+                            onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                    <td><input type="text" id="dodgeHalf" min="0" max="100" disabled></td>
+                    <td><input type="text" id="dodgeFifth" min="0" max="100" disabled></td>
+                </tr>
+                <tr>
+                    <th>DMG BNS</th>
+                    <td><input type="text" id="dmgBns" disabled></td>
+                </tr>
+                <tr>
+                    <th>BUILD</th>
+                    <td><input type="text" id="build" min="0" max="100" disabled></td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="characteristics4">
+            <table id="sanityAndHealthTable">
+                <tr>
+                    <th colspan="2">AFFLICTIONS</th>
+                </tr>
+                <tr>
+                    <td>Temp. Insanity</td>
+                    <td><input type="checkbox" id="tempInsanityCheckbox" onchange="saveToLocalStorage(this.id)"></td>
+                </tr>
+                <tr>
+                    <td>Indef. Insanity</td>
+                    <td><input type="checkbox" id="indefInsanityCheckbox" onchange="saveToLocalStorage(this.id)"></td>
+                </tr>
+                <tr>
+                    <td>Major Wound</td>
+                    <td><input type="checkbox" id="majorWoundCheckbox" onchange="saveToLocalStorage(this.id)"></td>
+                </tr>
+                <tr>
+                    <td>Unconscious</td>
+                    <td><input type="checkbox" id="unconsciousCheckbox" onchange="saveToLocalStorage(this.id)"></td>
+                </tr>
+                <tr>
+                    <td>Dying</td>
+                    <td><input type="checkbox" id="dyingCheckbox" onchange="saveToLocalStorage(this.id)"></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <hr>
+    <h1>Investigator Skills</h1>
+
+    <div class="skills">
+
+        <table id="skills1">
+            <tr>
+                <th>STAT</th>
+                <th>FULL</th>
+                <th>HALF</th>
+                <th>FIFTH</th>
+            </tr>
+
+            <tr>
+                <th>Accounting</th>
+                <td><input type="number" id="accounting" min="5" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="accountingHalf" disabled></td>
+                <td><input type="text" id="accountingFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Anthropology</th>
+                <td><input type="number" id="anthropology" min="1" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="anthropologyHalf" disabled></td>
+                <td><input type="text" id="anthropologyFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Appraise</th>
+                <td><input type="number" id="appraise" min="5" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="appraiseHalf" disabled></td>
+                <td><input type="text" id="appraiseFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Archaeology</th>
+                <td><input type="number" id="archaeology" min="1" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="archaeologygHalf" disabled></td>
+                <td><input type="text" id="archaeologyFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Art/Craft</th>
+                <td><input type="text" disabled></td>
+                <td><input type="text" disabled></td>
+                <td><input type="text" disabled></td>
+            </tr>
+
+            <tr>
+                <th><input type="text" id="artcraft1Name" onchange="saveToLocalStorage(this.id)"></th>
+                <td><input type="number" id="artcraft1" min="5" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="artcraft1Half" disabled></td>
+                <td><input type="text" id="artcraft1Fifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th><input type="text" id="artcraft2Name" onchange="saveToLocalStorage(this.id)"></th>
+                <td><input type="number" id="artcraft2" min="5" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="artcraft2Half" disabled></td>
+                <td><input type="text" id="artcraft2Fifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Charm</th>
+                <td><input type="number" id="charm" min="15" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="charmHalf" disabled></td>
+                <td><input type="text" id="charmFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Climb</th>
+                <td><input type="number" id="climb" min="20" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="climbHalf" disabled></td>
+                <td><input type="text" id="climbFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Credit Rating</th>
+                <td><input type="number" id="creditrating" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="creditratingHalf" disabled></td>
+                <td><input type="text" id="creditratingFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Cthulhu Mythos</th>
+                <td><input type="number" id="cthulhumythos" min="0" max="100"
+                        onchange="updateScores(this.id); calcSanMax(); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="cthulhumythosHalf" disabled></td>
+                <td><input type="text" id="cthulhumythosFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Disguise</th>
+                <td><input type="number" id="disguise" min="5" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="disguiseHalf" disabled></td>
+                <td><input type="text" id="disguiseFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Drive Auto</th>
+                <td><input type="number" id="driveauto" min="20" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="driveautoHalf" disabled></td>
+                <td><input type="text" id="driveautoFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Elec. Repair</th>
+                <td><input type="number" id="elecrepair" min="10" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="elecrepairHalf" disabled></td>
+                <td><input type="text" id="elecrepairFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Fast Talk</th>
+                <td><input type="number" id="fasttalk" min="5" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id); updateCombatScores()"></td>
+                <td><input type="text" id="fasttalkHalf" disabled></td>
+                <td><input type="text" id="fasttalkFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Fighting<small> (Brawl)</small></th>
+                <td><input type="number" id="fightingbrawl" min="25" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id); updateCombatScores()"></td>
+                <td><input type="text" id="fightingbrawlHalf" disabled></td>
+                <td><input type="text" id="fightingbrawlFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th><input type="text" id="fighting1Name" onchange="saveToLocalStorage(this.id)"></td>
+                <td><input type="number" id="fighting1" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id); updateCombatScores()"></td>
+                <td><input type="text" id="fighting1Half" disabled></td>
+                <td><input type="text" id="fighting1Fifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th><input type="text" id="fighting2Name" onchange="saveToLocalStorage(this.id)"></td>
+                <td><input type="number" id="fighting2" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id); updateCombatScores()"></td>
+                <td><input type="text" id="fighting2Half" disabled></td>
+                <td><input type="text" id="fighting2Fifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Firearms<small> (Handgun)</small></th>
+                <td><input type="number" id="firearmshandgun" min="20" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id); updateCombatScores()"></td>
+                <td><input type="text" id="firearmshandgunHalf" disabled></td>
+                <td><input type="text" id="firearmshandgunFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Firearms<small> (Long)</small></th>
+                <td><input type="number" id="firearmsrifleshotgun" min="25" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id); updateCombatScores()"></td>
+                <td><input type="text" id="firearmsrifleshotgunHalf" disabled></td>
+                <td><input type="text" id="firearmsrifleshotgunFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th><input type="text" id="firearms1Name" onchange="saveToLocalStorage(this.id)"></th>
+                <td><input type="number" id="firearms1" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id); updateCombatScores()"></td>
+                <td><input type="text" id="firearms1Half" disabled></td>
+                <td><input type="text" id="firearms1Fifth" disabled></td>
+            </tr>
+
+        </table>
+
+        <table id="skills2">
+
+            <tr>
+                <th>STAT</th>
+                <th>FULL</th>
+                <th>HALF</th>
+                <th>FIFTH</th>
+            </tr>
+
+            <tr>
+                <th>First Aid</th>
+                <td><input type="number" id="firstaid" min="30" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="firstaidHalf" disabled></td>
+                <td><input type="text" id="firstaidFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>History</th>
+                <td><input type="number" id="history" min="5" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="historyHalf" disabled></td>
+                <td><input type="text" id="historyFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Intimidate</th>
+                <td><input type="number" id="intimidate" min="15" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="intimidateHalf" disabled></td>
+                <td><input type="text" id="intimidateFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Jump</th>
+                <td><input type="number" id="jump" min="20" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="jumpHalf" disabled></td>
+                <td><input type="text" id="jumpFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Language <small>(other)</small></th>
+                <td><input type="text" disabled></td>
+                <td><input type="text" id="Half" disabled></td>
+                <td><input type="text" id="Fifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th><input type="text" id="language1Name" onchange="saveToLocalStorage(this.id)"></th>
+                <td><input type="number" id="language1" min="1" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="language1Half" disabled></td>
+                <td><input type="text" id="language1Fifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th><input type="text" id="language2Name" onchange="saveToLocalStorage(this.id)"></th>
+                <td><input type="number" id="language2" min="1" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="language2Half" disabled></td>
+                <td><input type="text" id="language2Fifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th><input type="text" id="language3Name" onchange="saveToLocalStorage(this.id)"></th>
+                <td><input type="number" id="language3" min="1" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="language3Half" disabled></td>
+                <td><input type="text" id="language3Fifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Language <small>(own)</small></th>
+                <td><input type="text" disabled></td>
+                <td><input type="text" disabled></td>
+                <td><input type="text" disabled></td>
+            </tr>
+
+            <tr>
+                <th><input type="text" id="language4Name" onchange="saveToLocalStorage(this.id)"></th>
+                <td><input type="number" id="language4" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="language4Half" disabled></td>
+                <td><input type="text" id="language4Fifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Law</th>
+                <td><input type="number" id="law" min="5" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="lawHalf" disabled></td>
+                <td><input type="text" id="lawFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Library Use</th>
+                <td><input type="number" id="libraryuse" min="20" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="libraryuseHalf" disabled></td>
+                <td><input type="text" id="libraryuseFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Listen</th>
+                <td><input type="number" id="listen" min="20" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="listenHalf" disabled></td>
+                <td><input type="text" id="listenFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Locksmith</th>
+                <td><input type="number" id="locksmith" min="1" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="locksmithHalf" disabled></td>
+                <td><input type="text" id="locksmithFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Mech. Repair</th>
+                <td><input type="number" id="mechrepair" min="10" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="mechrepairHalf" disabled></td>
+                <td><input type="text" id="mechrepairFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Medicine</th>
+                <td><input type="number" id="medicine" min="1" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="medicineHalf" disabled></td>
+                <td><input type="text" id="medicineFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Natural World</th>
+                <td><input type="number" id="naturalworld" min="10" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="naturalworldHalf" disabled></td>
+                <td><input type="text" id="naturalworldFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Navigate</th>
+                <td><input type="number" id="navigate" min="10" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="navigateHalf" disabled></td>
+                <td><input type="text" id="navigateFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Occult</th>
+                <td><input type="number" id="occult" min="5" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="occultHalf" disabled></td>
+                <td><input type="text" id="occultFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Op. Hv. Machine</th>
+                <td><input type="number" id="ophvmachine" min="1" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="ophvmachineHalf" disabled></td>
+                <td><input type="text" id="ophvmachineFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Persuade</th>
+                <td><input type="number" id="persuade" min="10" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="persuadeHalf" disabled></td>
+                <td><input type="text" id="persuadeFifth" disabled></td>
+            </tr>
+
+        </table>
+
+        <table id="skills3">
+
+            <tr>
+                <th>STAT</th>
+                <th>FULL</th>
+                <th>HALF</th>
+                <th>FIFTH</th>
+            </tr>
+
+            <tr>
+                <th>Pilot</th>
+                <td><input type="text" disabled></td>
+                <td><input type="text" disabled></td>
+                <td><input type="text" disabled></td>
+            </tr>
+
+            <tr>
+                <th><input type="text" id="pilotName" onchange="saveToLocalStorage(this.id)"></th>
+                <td><input type="number" id="pilot" min="1" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="pilotHalf" disabled></td>
+                <td><input type="text" id="pilotFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Psychology</th>
+                <td><input type="number" id="psychology" min="10" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="psychologyHalf" disabled></td>
+                <td><input type="text" id="psychologyFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Psychoanalysis</th>
+                <td><input type="number" id="psychoanalysis" min="1" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="psychoanalysisHalf" disabled></td>
+                <td><input type="text" id="psychoanalysisFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Ride</th>
+                <td><input type="number" id="ride" min="1" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="rideHalf" disabled></td>
+                <td><input type="text" id="rideFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Science</th>
+                <td><input type="text" disabled></td>
+                <td><input type="text" disabled></td>
+                <td><input type="text" disabled></td>
+            </tr>
+
+            <tr>
+                <th><input type="text" id="science1Name" onchange="saveToLocalStorage(this.id)"></th>
+                <td><input type="number" id="science1" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="science1Half" disabled></td>
+                <td><input type="text" id="science1Fifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th><input type="text" id="science2Name" onchange="saveToLocalStorage(this.id)"></th>
+                <td><input type="number" id="science2" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="science2Half" disabled></td>
+                <td><input type="text" id="science2Fifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th><input type="text" id="science3Name" onchange="saveToLocalStorage(this.id)"></th>
+                <td><input type="number" id="science3" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="science3Half" disabled></td>
+                <td><input type="text" id="science3Fifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Sleight of Hand</th>
+                <td><input type="number" id="sleightofhand" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="sleightofhandHalf" disabled></td>
+                <td><input type="text" id="sleightofhandFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Spot Hidden</th>
+                <td><input type="number" id="spothidden" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="spothiddenHalf" disabled></td>
+                <td><input type="text" id="spothiddenFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Stealth</th>
+                <td><input type="number" id="stealth" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="stealthHalf" disabled></td>
+                <td><input type="text" id="stealthFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Survival</th>
+                <td><input type="text" disabled></td>
+                <td><input type="text" disabled></td>
+                <td><input type="text" disabled></td>
+            </tr>
+
+            <tr>
+                <th><input type="text" id="survivalName" onchange="saveToLocalStorage(this.id)"></th>
+                <td><input type="number" id="survival" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="survivalHalf" disabled></td>
+                <td><input type="text" id="survivalFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Swim</th>
+                <td><input type="number" id="swim" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="swimHalf" disabled></td>
+                <td><input type="text" id="swimFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Throw</th>
+                <td><input type="number" id="throw" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="throwHalf" disabled></td>
+                <td><input type="text" id="throwFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th>Track</th>
+                <td><input type="number" id="track" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="trackHalf" disabled></td>
+                <td><input type="text" id="trackFifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th><input type="text" id="custom1Name" onchange="saveToLocalStorage(this.id)"></th>
+                <td><input type="number" id="custom1" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="custom1Half" disabled></td>
+                <td><input type="text" id="custom1Fifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th><input type="text" id="custom2Name" onchange="saveToLocalStorage(this.id)"></th>
+                <td><input type="number" id="custom2" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="custom2Half" disabled></td>
+                <td><input type="text" id="custom2Fifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th><input type="text" id="custom3Name" onchange="saveToLocalStorage(this.id)"></th>
+                <td><input type="number" id="custom3" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="custom3Half" disabled></td>
+                <td><input type="text" id="custom3Fifth" disabled></td>
+            </tr>
+
+            <tr>
+                <th><input type="text" id="custom4Name" onchange="saveToLocalStorage(this.id)"></th>
+                <td><input type="number" id="custom4" min="0" max="100"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="custom4Half" disabled></td>
+                <td><input type="text" id="custom4Fifth" disabled></td>
+            </tr>
+        </table>
+    </div>
+
+    <hr>
+    <h1>Weapons</h1>
+
+    <div class="weapons">
+        <table id="weaponsTable">
+            <tr>
+                <th>Weapon Name</th>
+                <th>Stat</th>
+                <th>Regular</th>
+                <th>Hard</th>
+                <th>Extreme</th>
+                <th>Damage</th>
+                <th>Range</th>
+                <th>Attacks</th>
+                <th>Ammo</th>
+                <th>Malf.</th>
+            </tr>
+
+            <tr>
+                <td><input type="text" id="weapon1Name" onchange="saveToLocalStorage(this.id)"></td>
+                <td><select id="combatStatSelector1" onchange="weaponStatSelector(1); saveToLocalStorage(this.id)">
+                        <option value="blankOption"></option>
+                        <option value="fightingbrawlOption">Brawl</option>
+                        <option value="fighting1Option">Fight Spec 1</option>
+                        <option value="fighting2Option">Fight Spec 2</option>
+                        <option value="firearmshandgunOption">Handgun</option>
+                        <option value="firearmsrifleshotgunOption">Long Gun</option>
+                        <option value="firearms1Option">Gun Spec</option>
+                    </select></td>
+                <td><input type="text" id="weapon1Diff" disabled size="8"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="weapon1DiffHalf" disabled size="8"></td>
+                <td><input type="text" id="weapon1DiffFifth" disabled size="8"></td>
+                <td><input type="text" id="weapon1Damage" size="14" onchange="saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="weapon1Range" size="8" onchange="saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="weapon1Attacks" size="8" onchange="saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="weapon1Ammo" size="8" onchange="saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="weapon1Malf" size="8" onchange="saveToLocalStorage(this.id)"></td>
+            </tr>
+
+            <tr>
+                <td><input type="text" id="weapon2Name" onchange="saveToLocalStorage(this.id)"></td>
+                <td><select id="combatStatSelector2" onchange="weaponStatSelector(2); saveToLocalStorage(this.id)">
+                        <option value="blankOption"></option>
+                        <option value="fightingbrawlOption">Brawl</option>
+                        <option value="fighting1Option">Fight Spec 1</option>
+                        <option value="fighting2Option">Fight Spec 2</option>
+                        <option value="firearmshandgunOption">Handgun</option>
+                        <option value="firearmsrifleshotgunOption">Long Gun</option>
+                        <option value="firearms1Option">Gun Spec</option>
+                    </select></td>
+                <td><input type="text" id="weapon2Diff" disabled size="8"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="weapon2DiffHalf" disabled size="8"></td>
+                <td><input type="text" id="weapon2DiffFifth" disabled size="8"></td>
+                <td><input type="text" id="weapon2Damage" size="14" onchange="saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="weapon2Range" size="8" onchange="saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="weapon2Attacks" size="8" onchange="saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="weapon2Ammo" size="8" onchange="saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="weapon2Malf" size="8" onchange="saveToLocalStorage(this.id)"></td>
+            </tr>
+
+            <tr>
+                <td><input type="text" id="weapon3Name" onchange="saveToLocalStorage(this.id)"></td>
+                <td><select id="combatStatSelector3" onchange="weaponStatSelector(3); saveToLocalStorage(this.id)">
+                        <option value="blankOption"></option>
+                        <option value="fightingbrawlOption">Brawl</option>
+                        <option value="fighting1Option">Fight Spec 1</option>
+                        <option value="fighting2Option">Fight Spec 2</option>
+                        <option value="firearmshandgunOption">Handgun</option>
+                        <option value="firearmsrifleshotgunOption">Long Gun</option>
+                        <option value="firearms1Option">Gun Spec</option>
+                    </select></td>
+                <td><input type="text" id="weapon3Diff" disabled size="8"
+                        onchange="updateScores(this.id); saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="weapon3DiffHalf" disabled size="8"></td>
+                <td><input type="text" id="weapon3DiffFifth" disabled size="8"></td>
+                <td><input type="text" id="weapon3Damage" size="14" onchange="saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="weapon3Range" size="8" onchange="saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="weapon3Attacks" size="8" onchange="saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="weapon3Ammo" size="8" onchange="saveToLocalStorage(this.id)"></td>
+                <td><input type="text" id="weapon3Malf" size="8" onchange="saveToLocalStorage(this.id)"></td>
+            </tr>
+        </table>
+    </div>
+
+</body>
+
+</html>

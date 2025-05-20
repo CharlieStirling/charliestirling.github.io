@@ -1,0 +1,111 @@
+/* sets the font for the page and sets defaults for alignment */
+body {
+    font-family: "Courier Prime", monospace;
+    font-weight: 400;
+    font-style: normal;
+
+    width: fit-content;
+    text-align: center;
+
+    margin: auto;
+}
+
+/* adds a little spacing between characters in headers
+   also turns the text all uppercase */
+h1 {
+    text-transform: uppercase;
+    letter-spacing: 0.6rem;
+    margin-top: 15px;
+}
+
+th {
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+/* changes the colour of text in disabled inputs */
+input:disabled {
+    color: black;
+    text-align: center;
+}
+
+input[type="number"] {
+    text-align: center;
+}
+
+/* changes the colour of ticked checkboxes to black */
+input[type="checkbox"]:checked {
+    accent-color: black;
+}
+
+.characterData {
+    display: grid;
+    text-align: center;
+    margin-top: 6px;
+
+    input[type="text"] {
+        text-align: center;
+        font-weight: bold;
+        font-size: 20pt;
+        height:64px;
+        width:95%;
+    }
+}
+
+.characteristicsCollection {
+    display: flex;
+    justify-content: space-between;
+
+    table {
+        margin-right: 25px;
+        margin-left: 25px;
+    }
+
+    input {
+        width: 60px;
+    }
+}
+
+table#sanityAndHealthTable {
+    text-align: right;
+}
+
+.skills {
+    display: flex;
+    justify-content: space-between;
+
+    table {
+        margin-right: 25px;
+        margin-left: 25px;
+    }
+
+    input {
+        width: 60px;
+    }
+
+    th {
+        input {
+            text-align: center;
+            font-weight: bold;
+
+            width:fit-content;
+            max-width: 170px;
+        }
+    }
+    
+/* sets a smaller font size for a tag used in the investigator skills section */
+    small {
+        font-size: 9pt;
+    }
+}
+
+table#weaponsTable {
+    width: 100%;
+    margin:auto;
+    margin-bottom: 30px;
+
+    input {
+        text-align: center;
+    }
+        
+}
