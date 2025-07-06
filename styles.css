@@ -109,3 +109,11 @@ table#weaponsTable {
     }
         
 }
+
+.inventory {
+    margin-bottom:30px;
+
+    resize {
+        height:fit-content;
+    }
+}

@@ -221,7 +221,7 @@ function saveToLocalStorage(id) {
 
     console.debug("attempting to save type: " + eType);
 
-    if (eType == "number" || eType == "text") {
+    if (eType == "number" || eType == "text" || eType == "textarea") {
         var score = document.getElementById(id).value;
         localStorage.setItem(id, score);
         console.log("saved type: '" + eType + "' with key: '" + id + "' and value of: '" + score + "'")
